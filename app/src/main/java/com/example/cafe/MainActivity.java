@@ -1,112 +1,140 @@
 package com.example.cafe;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
-    private CafeAdapter adapter;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+     private CafeAdapter adapter;
+     private  ArrayList<Data> listData;
+     RecyclerView recyclerView;
+     EditText editText;
+      @Override
+     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
-
         getData();
+        init();
+        setSearch();
 
+
+        adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int pos) {
+                final ArrayList<Object> selectedItems = new ArrayList<>();
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("추가메뉴")
+                        .setMultiChoiceItems(R.array.menu, null, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+                                if (isChecked) {
+                                    //항목이 선택이 되면 추가시킵니다.
+                                    selectedItems.add(i);
+                                } else if(selectedItems.contains(i)) {
+                                    //아이템이 이미 배열에 있으면, 제거합니다.
+                                    selectedItems.remove(Integer.valueOf(i));
+                                }
+                            }
+                        })
+
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                String[] options = getResources().getStringArray(R.array.menu);
+                                String string = "선택하신 추가 옵션은 ";
+                                for (int i = 0; i < selectedItems.size(); i++) {
+                                        string += options[i] + ", ";
+
+                                }
+                                Toast.makeText(MainActivity.this, string +" 입니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+            }
+        });
     }
-    private void init(){
+     private void init(){
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager );
 
-        adapter = new CafeAdapter();
+        adapter = new CafeAdapter(listData);
         recyclerView.setAdapter(adapter);
+
     }
-    private void getData() {
+     private void getData() {
+        listData = new ArrayList<>();
         // 임의의 데이터입니다.
-        List<String> listTitle = Arrays.asList("국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립",
-                "국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립");
-        List<String> listContent = Arrays.asList(
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다.",
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다."
-
-        );
-        List<String> listPrice = Arrays.asList(
-                "1원",
-                "2원",
-                "3원",
-                "4원",
-                "5원",
-                "6원",
-                "7원",
-                "8원",
-                "9원",
-                "10원",
-                "11원",
-                "12원",
-                "13원",
-                "14원",
-                "15원",
-                "16원"
-        );
-        List<Integer> listResId = Arrays.asList(
-                R.drawable.a,
-                R.drawable.b,
-                R.drawable.c,
-                R.drawable.d,
-                R.drawable.e,
-                R.drawable.f,
-                R.drawable.g,
-                R.drawable.h,
-                R.drawable.i,
-                R.drawable.j,
-                R.drawable.k,
-                R.drawable.l,
-                R.drawable.m,
-                R.drawable.n,
-                R.drawable.o,
-                R.drawable.p
-        );
-        for (int i = 0; i < listTitle.size(); i++) {
-            // 각 List의 값들을 data 객체에 set 해줍니다.
-            Data data = new Data();
-            data.setTitle(listTitle.get(i));
-            data.setContent(listContent.get(i));
-            data.setPrice(listPrice.get(i));
-            data.setResId(listResId.get(i));
-
-            // 각 값이 들어간 data를 adapter에 추가합니다.
-            adapter.addItem(data);
+        listData.add(new Data( "핸드드립", "핸드드립입니다.", "1원", R.drawable.a));
+        listData.add(new Data("아메리카노", "아메리카노입니다.", "2원", R.drawable.b));
+        listData.add(new Data("에스프레소", "에스프레소입니다", "3원", R.drawable.c));
+        listData.add(new Data("카페모카", "카페모카입니다", "4원", R.drawable.d));
+        listData.add(new Data("카푸치노", "카푸치노입니다", "5원", R.drawable.e));
+        listData.add(new Data("카라멜 마끼아또", "카라멜 마끼아또입니다", "6원", R.drawable.f));
+        listData.add(new Data("그린티라떼", "그린티라떼입니다.","7원",R.drawable.g));
+        listData.add(new Data("초코라떼","초코라떼입니다","8원", R.drawable.h));
+        listData.add(new Data("카페라떼", "카페라떼입니다", "9원", R.drawable.i));
+        listData.add(new Data("콜드브루", "콜드브루입니다", "10원", R.drawable.j));
+        listData.add(new Data("밀크티", "밀크티입니다", "11원", R.drawable.k));
+        listData.add(new Data("레몬티", "레몬티입니다", "12원", R.drawable.l));
+        listData.add(new Data("유자차", "유자차입니다", "13원", R.drawable.m));
+        listData.add(new Data("얼그레이티", "얼그레이티입니다","14원", R.drawable.n));
+        listData.add(new Data("바닐라라떼", "바닐라라떼입니다", "15원", R.drawable.o));
+        listData.add(new Data("123,","456","16원",R.drawable.p));
+        Log.v("여기까진됨22","메시지");
         }
 
-        // adapter의 값이 변경되었다는 것을 알려줍니다.
-        adapter.notifyDataSetChanged();
+     private void filter(String text){
+    ArrayList<Data> filteredList = new ArrayList<>();
+    for (Data SearchData : listData){
+        if(SearchData.getTitle().toLowerCase().contains(text.toLowerCase())){
+            filteredList.add(SearchData);
+        }
     }
+    adapter.filterList(filteredList);
+}
+     public void setSearch(){
+
+       editText= (EditText)findViewById(R.id.menu_search);
+       editText.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable editable) {
+               filter(editable.toString());
+           }
+       });
+
+
+     }
+
 }

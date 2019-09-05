@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu">
+        <item>사이즈 업</item>
+        <item>아이스로 변경</item>
+        <item>샷 추가</item>
+        <item>휘핑크림 추가</item>
+
+    </string-array>
+</resources>

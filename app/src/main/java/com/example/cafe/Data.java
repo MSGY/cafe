@@ -6,37 +6,31 @@ public class Data {
     private String price;
     private int resId;
 
-    public String getTitle() {
-        return title;
+    public Data(String title, String content, String price, int resId) {
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.resId = resId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getTitle() {
+        return title;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public String getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
 
     public int getResId() {
         return resId;
     }
 
-    public void setResId(int resId) {
-        this.resId = resId;
-    }
 
 
 
