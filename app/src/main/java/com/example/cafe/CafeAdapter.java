@@ -17,18 +17,12 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.ItemViewHolder
 
     private ArrayList<Data> listData;
 
-    //커스텀 온클릭 리스너입니다.
-    public interface OnItemClickListener {
-        void onItemClick(View view, int pos);
-    }
     // 리스너 객체 참조를 저장하는 변수입니다.
     private OnItemClickListener CafeListener = null;
-
+    //커스텀 온클릭 리스너입니다.
+    public interface OnItemClickListener {void onItemClick(View view, int pos);}
     //OnItemClcikListener 리스너 참조 객체를 어댑터에 전달하는 메소드입니다.
-    public void setOnItemClickListener(OnItemClickListener listener){
-        this.CafeListener = listener;
-
-    }
+    public void setOnItemClickListener(OnItemClickListener listener){this.CafeListener = listener;}
 
     // adapter에 들어갈 list 입니다.//
     public CafeAdapter(ArrayList<Data> ListData){
@@ -61,21 +55,14 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.ItemViewHolder
         // RecyclerView의 총 개수 입니다.
         return listData.size();
     }
-    public void filterList(ArrayList<Data> filteredList ){
-        listData = filteredList;
-        notifyDataSetChanged();
-    }
-
     // RecyclerView의 핵심인 ViewHolder 입니다.
-
-    // 여기서 subView를 setting 해줍니다.
     class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView textView1;
         public TextView textView2;
         public TextView textView3;
         public ImageView imageView;
-        int pos = getAdapterPosition();
 
+        // 여기서 subView를 setting 해줍니다.
         ItemViewHolder(View itemView) {
             super(itemView);
             textView1 = itemView.findViewById(R.id.textView1);
@@ -86,7 +73,7 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.ItemViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
                             if(CafeListener != null){
                                 CafeListener.onItemClick(view, pos);
@@ -95,8 +82,10 @@ public class CafeAdapter extends RecyclerView.Adapter<CafeAdapter.ItemViewHolder
                 }
             });
         }
-
-
+    }
+    public void filterList(ArrayList<Data> filteredList ){
+        listData = filteredList;
+        notifyDataSetChanged();
     }
 }
 

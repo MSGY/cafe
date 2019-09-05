@@ -30,46 +30,9 @@ public class MainActivity extends AppCompatActivity {
         getData();
         init();
         setSearch();
+        MenuOptionClickEvent();
 
 
-        adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int pos) {
-                final ArrayList<Object> selectedItems = new ArrayList<>();
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("추가메뉴")
-                        .setMultiChoiceItems(R.array.menu, null, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
-                                if (isChecked) {
-                                    //항목이 선택이 되면 추가시킵니다.
-                                    selectedItems.add(i);
-                                } else if(selectedItems.contains(i)) {
-                                    //아이템이 이미 배열에 있으면, 제거합니다.
-                                    selectedItems.remove(Integer.valueOf(i));
-                                }
-                            }
-                        })
-
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                String[] options = getResources().getStringArray(R.array.menu);
-                                String string = "선택하신 추가 옵션은 ";
-                                for (int i = 0; i < selectedItems.size(); i++) {
-                                        string += options[i] + ", ";
-
-                                }
-                                Toast.makeText(MainActivity.this, string +" 입니다.", Toast.LENGTH_SHORT).show();
-                            }
-
-                        })
-                        .setNegativeButton("취소", null)
-                        .show();
-            }
-        });
     }
      private void init(){
 
@@ -106,35 +69,65 @@ public class MainActivity extends AppCompatActivity {
         }
 
      private void filter(String text){
-    ArrayList<Data> filteredList = new ArrayList<>();
-    for (Data SearchData : listData){
-        if(SearchData.getTitle().toLowerCase().contains(text.toLowerCase())){
-            filteredList.add(SearchData);
-        }
-    }
-    adapter.filterList(filteredList);
-}
+            ArrayList<Data> filteredList = new ArrayList<>();
+            for (Data SearchData : listData){
+                if(SearchData.getTitle().toLowerCase().contains(text.toLowerCase())){
+                    filteredList.add(SearchData);
+                        }
+                }
+            adapter.filterList(filteredList);
+      }
      public void setSearch(){
-
        editText= (EditText)findViewById(R.id.menu_search);
        editText.addTextChangedListener(new TextWatcher() {
            @Override
-           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-           }
-
+           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
            @Override
-           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-           }
-
+           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
            @Override
            public void afterTextChanged(Editable editable) {
                filter(editable.toString());
            }
        });
-
-
      }
+     public void MenuOptionClickEvent(){
+        adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int pos) {
+                final ArrayList<Object> selectedItems = new ArrayList<>();
 
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("추가메뉴")
+                        .setMultiChoiceItems(R.array.menu, null, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+                                if (isChecked) {
+                                    //항목이 선택이 되면 추가시킵니다.
+                                    selectedItems.add(i);
+                                } else if(selectedItems.contains(i)) {
+                                    //아이템이 이미 배열에 있으면, 제거합니다.
+                                    selectedItems.remove(Integer.valueOf(i));
+                                }
+                            }
+                        })
+
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                String[] options = getResources().getStringArray(R.array.menu);
+                                String string = "선택하신 추가 옵션은 ";
+                                for (int i = 0; i < selectedItems.size(); i++) {
+                                    string += options[i] + "  ";
+
+                                }
+                                Toast.makeText(MainActivity.this, string +" 입니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+            }
+        });
+    }
 }

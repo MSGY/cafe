@@ -1,6 +1,6 @@
 package com.example.cafe;
 
-public class Data {
+public class Data{
     private String title;
     private String content;
     private String price;
@@ -21,17 +21,11 @@ public class Data {
         return content;
     }
 
-
     public String getPrice() {
         return price;
     }
 
-
     public int getResId() {
         return resId;
     }
-
-
-
-
 }
