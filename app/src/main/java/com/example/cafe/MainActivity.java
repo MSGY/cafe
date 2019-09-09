@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Data> listData;
     RecyclerView recyclerView;
     EditText editText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         getData();
         init();
         setSearch();
-        getOrder();
-        MenuOptionClickEvent();
+        MenuClickEvent();
+        //getOrder();
     }
 
     private void init() {
@@ -54,21 +50,21 @@ public class MainActivity extends AppCompatActivity {
         listData = new ArrayList<>();
         // 임의의 데이터입니다.
         listData.add(new Data("핸드드립", "핸드드립입니다.", "1원", R.drawable.a));
-        listData.add(new Data("아메리카노", "아메리카노입니다.", "2원", R.drawable.b));
-        listData.add(new Data("에스프레소", "에스프레소입니다", "3원", R.drawable.c));
-        listData.add(new Data("카페모카", "카페모카입니다", "4원", R.drawable.d));
-        listData.add(new Data("카푸치노", "카푸치노입니다", "5원", R.drawable.e));
-        listData.add(new Data("카라멜 마끼아또", "카라멜 마끼아또입니다", "6원", R.drawable.f));
-        listData.add(new Data("그린티라떼", "그린티라떼입니다.", "7원", R.drawable.g));
-        listData.add(new Data("초코라떼", "초코라떼입니다", "8원", R.drawable.h));
-        listData.add(new Data("카페라떼", "카페라떼입니다", "9원", R.drawable.i));
-        listData.add(new Data("콜드브루", "콜드브루입니다", "10원", R.drawable.j));
-        listData.add(new Data("밀크티", "밀크티입니다", "11원", R.drawable.k));
-        listData.add(new Data("레몬티", "레몬티입니다", "12원", R.drawable.l));
-        listData.add(new Data("유자차", "유자차입니다", "13원", R.drawable.m));
-        listData.add(new Data("얼그레이티", "얼그레이티입니다", "14원", R.drawable.n));
-        listData.add(new Data("바닐라라떼", "바닐라라떼입니다", "15원", R.drawable.o));
-        listData.add(new Data("123,", "456", "16원", R.drawable.p));
+        listData.add(new Data("아메리카노", "아메리카노입니다.", "2", R.drawable.b));
+        listData.add(new Data("에스프레소", "에스프레소입니다", "3", R.drawable.c));
+        listData.add(new Data("카페모카", "카페모카입니다", "4", R.drawable.d));
+        listData.add(new Data("카푸치노", "카푸치노입니다", "5", R.drawable.e));
+        listData.add(new Data("카라멜 마끼아또", "카라멜 마끼아또입니다", "6", R.drawable.f));
+        listData.add(new Data("그린티라떼", "그린티라떼입니다.", "7", R.drawable.g));
+        listData.add(new Data("초코라떼", "초코라떼입니다", "8", R.drawable.h));
+        listData.add(new Data("카페라떼", "카페라떼입니다", "9", R.drawable.i));
+        listData.add(new Data("콜드브루", "콜드브루입니다", "10", R.drawable.j));
+        listData.add(new Data("밀크티", "밀크티입니다", "11", R.drawable.k));
+        listData.add(new Data("레몬티", "레몬티입니다", "12", R.drawable.l));
+        listData.add(new Data("유자차", "유자차입니다", "13", R.drawable.m));
+        listData.add(new Data("얼그레이티", "얼그레이티입니다", "14", R.drawable.n));
+        listData.add(new Data("바닐라라떼", "바닐라라떼입니다", "15", R.drawable.o));
+        listData.add(new Data("123,", "456", "16", R.drawable.p));
     }
 
     private void filter(String text) {
@@ -98,46 +94,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void getOrder(){
 
-        final GestureDetector gestureDetector = new GestureDetector(MainActivity.this,new GestureDetector.SimpleOnGestureListener()
-        {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e)
-            {
-                return true;
-            }
-        });
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                Log.d("TAG","onInterceptTouchEvent");
-                View child = rv.findChildViewUnder(e.getX(), e.getY());
-                if(child!=null && gestureDetector.onTouchEvent(e)) {
-                    TextView price = (TextView) rv.getChildViewHolder(child).itemView.findViewById(R.id.textView3);
-                    TextView TotalPrice = (TextView)findViewById(R.id.TextView5);
-                    Toast.makeText(getApplication(), price.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
-
-
-    }
-    public void MenuOptionClickEvent(){
+    public void MenuClickEvent(){
         adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+            int sum = 0;
             @Override
             public void onItemClick(View view, int pos) {
+                Data PriceValues = listData.get(pos-1);
                 final ArrayList<Object> selectedItems = new ArrayList<>();
                 new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this)
                         .setTitle("추가메뉴")
@@ -169,12 +132,16 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("취소", null)
                         .show();
-            }
-        });
-    }
-    public void TotalPrice(){adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int pos) {
+
+                sum += Integer.parseInt(PriceValues.getPrice());
+                String total = Integer.toString(sum);
+                Toast.makeText(getApplication(), PriceValues.getPrice(),Toast.LENGTH_SHORT).show();
+
+                TextView TotalPrice = (TextView)findViewById(R.id.textView5);
+                TotalPrice.setText("총 주문금액은 : "+ total+"원 입니다.");
+                                Log.d("TAG", total);
+
+                Log.d("TAG", PriceValues.getTitle());
 
             }
         });

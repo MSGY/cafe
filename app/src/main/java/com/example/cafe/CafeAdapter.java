@@ -1,6 +1,5 @@
 package com.example.cafe;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 
-
 public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int TYPE_HEADER = 0;
     private final int TYPE_ITEM = 1;
-    private final int TYPE_FOOTER = 2;
+    //private final int TYPE_FOOTER = 2;
+
     private ArrayList<Data> listData;
     @Nullable
     // 리스너 객체 참조를 저장하는 변수입니다.
@@ -38,15 +37,14 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         RecyclerView.ViewHolder holder;
         View view;
         if (viewType == TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, false);
-            holder = new FooterViewHolder(view);
-        } else if (viewType == TYPE_FOOTER) {
+            holder = new HeaderViewHolder(view);
+       /* } else if (viewType == TYPE_FOOTER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
-            holder = new FooterViewHolder(view);
+            holder = new FooterViewHolder(view);*/
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_cafe_item, parent, false);
             holder = new ItemViewHolder(view);
@@ -58,9 +56,9 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
        if(position == 0){
            return TYPE_HEADER;
        }
-        else if(position == listData.size() + 1){
-            return TYPE_FOOTER;
-        }else
+        /*else if(position == listData.size() + 1){
+            return TYPE_FOOTER;*/
+        else
             return TYPE_ITEM;
     }
     @Override
@@ -68,8 +66,8 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if(holder instanceof HeaderViewHolder){
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
 
-        }else if(holder instanceof FooterViewHolder){
-            FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+        //}else if(holder instanceof FooterViewHolder){
+          //  FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
 
         }else{
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
@@ -87,7 +85,7 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return listData.size()+2;}
+        return listData.size()+1;}
 
     // RecyclerView의 핵심인 ViewHolder 입니다.
     class ItemViewHolder extends RecyclerView.ViewHolder {

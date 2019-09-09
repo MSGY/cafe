@@ -5,7 +5,6 @@ public class Data{
     private String content;
     private String price;
     private int resId;
-
     public Data(String title, String content, String price, int resId) {
         this.title = title;
         this.content = content;
