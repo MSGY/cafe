@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         listData.add(new Data("유자차", "유자차입니다", "13", R.drawable.m));
         listData.add(new Data("얼그레이티", "얼그레이티입니다", "14", R.drawable.n));
         listData.add(new Data("바닐라라떼", "바닐라라떼입니다", "15", R.drawable.o));
-        listData.add(new Data("123,", "456", "16", R.drawable.p));
+        listData.add(new Data("치킨", "샘플", "123", R.drawable.p));
     }
 
     private void filter(String text) {
@@ -135,13 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
                 sum += Integer.parseInt(PriceValues.getPrice());
                 String total = Integer.toString(sum);
-                Toast.makeText(getApplication(), PriceValues.getPrice(),Toast.LENGTH_SHORT).show();
-
                 TextView TotalPrice = (TextView)findViewById(R.id.textView5);
-                TotalPrice.setText("총 주문금액은 : "+ total+"원 입니다.");
-                                Log.d("TAG", total);
-
-                Log.d("TAG", PriceValues.getTitle());
+                TotalPrice.setText("총 주문금액은 : "+ total+"원");
+                          //      Log.d("TAG", total);
+                          // Log.d("TAG", PriceValues.getTitle());
 
             }
         });
