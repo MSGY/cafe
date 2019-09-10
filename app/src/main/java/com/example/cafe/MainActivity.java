@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private void getData() {
         listData = new ArrayList<>();
         // 임의의 데이터입니다.
-        listData.add(new Data("핸드드립", "핸드드립입니다.", "1원", R.drawable.a));
+        listData.add(new Data("핸드드립", "핸드드립입니다.", "1", R.drawable.a));
         listData.add(new Data("아메리카노", "아메리카노입니다.", "2", R.drawable.b));
         listData.add(new Data("에스프레소", "에스프레소입니다", "3", R.drawable.c));
         listData.add(new Data("카페모카", "카페모카입니다", "4", R.drawable.d));

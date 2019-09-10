@@ -36,11 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
+            android:background="#FF4081"
             android:gravity="center_vertical"
-            android:background="@color/colorPrimaryDark"
             android:text="총 주문금액"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#FFF"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>

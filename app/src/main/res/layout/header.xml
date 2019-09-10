@@ -8,9 +8,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="THIS IS HEADER"
+        android:background="#3F51B5"
+        android:text="메뉴를 선택하세요"
         android:textSize="16sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#DFA"
         android:textStyle="bold"/>
 </LinearLayout>

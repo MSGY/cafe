@@ -79,7 +79,7 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         Data abc = listData.get(position - 1);
         holder.textView1.setText(abc.getTitle());
         holder.textView2.setText(abc.getContent());
-        holder.textView3.setText(abc.getPrice());
+        holder.textView3.setText(abc.getPrice()+"원");
         holder.imageView.setImageResource(abc.getResId());
     }
     @Override
