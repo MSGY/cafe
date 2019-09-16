@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         init();
         setSearch();
         MenuClickEvent();
-        //getOrder();
     }
 
     private void init() {
@@ -121,13 +120,15 @@ public class MainActivity extends AppCompatActivity {
 
                                 String[] options = getResources().getStringArray(R.array.menu);
                                 String string = "선택하신 추가 옵션은 ";
-                                for (int i = 0; i < selectedItems.size(); i++) {
-                                    string += options[i] + " ";
+                                if (selectedItems.size() != 0) {
+                                    for (int i = 0; i < selectedItems.size(); i++) {
+                                        string += options[i] + " ";
 
+                                    }
+                                    Toast.makeText(MainActivity.this, string + " 입니다.", Toast.LENGTH_SHORT).show();
                                 }
-                                Toast.makeText(MainActivity.this, string +" 입니다.", Toast.LENGTH_SHORT).show();
+                                else{Toast.makeText(MainActivity.this, "선택하신 추가메뉴는 없습니다.", Toast.LENGTH_SHORT).show();}
                             }
-
                         })
                         .setNegativeButton("취소", null)
                         .show();
