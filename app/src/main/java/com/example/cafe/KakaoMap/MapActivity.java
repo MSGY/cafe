@@ -26,30 +26,27 @@ public class MapActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        Handler mapHandler = new mHandler();
-        Thread mapThread = new MapThread(this, mapHandler, "남부순환로 184길 13");
-        mapThread.start();
-
 
 
         MapView mapView = new MapView(this);
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
+        MapManager.getInstance().requestMap( mMapCallback, "남부순환로 184길 13");
     }
 
-    private Callback<MapDto> mMapCallbak = new Callback<MapDto>() {
+    private Callback<MapDto> mMapCallback = new Callback<MapDto>() {
         @Override
         public void onResponse(Call<MapDto> call, Response<MapDto> response) {
             Log.d(TAG, "리스폰스 함" + response);
             if(response.isSuccessful()){
                 MapDto map= response.body();
-                Log.d(TAG, "onResponse: "+ map.getDocuments().get(0).getAddress().getAddress_name());
+            Log.d(TAG, "onResponse: "+ map.getDocuments().get(0).getAddress().getAddress_name());
 
-                Message msg = Message.obtain();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Address", map);
-                msg.setData(bundle);
-            }
+            Message msg = Message.obtain();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Address", map);
+            msg.setData(bundle);
+        }
         }
 
         @Override
@@ -58,13 +55,4 @@ public class MapActivity extends AppCompatActivity  {
 
         }
     };
-  private class mHandler extends Handler{
-      @Override
-      public void handleMessage(@NonNull Message msg) {
-          super.handleMessage(msg);
-          MapDto map = (MapDto) msg.getData().getSerializable("Address");
-          Log.d(TAG, "handleMessage" + map);
-
-      }
-  }
 }

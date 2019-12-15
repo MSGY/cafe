@@ -13,8 +13,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapManager {
 
+    private static MapManager mInstance;
 
-    public void requestMap(Context mContext,Callback<MapDto> callback , String name){
+
+    public static MapManager getInstance() {
+        if(mInstance == null){
+            mInstance = new MapManager();
+        }
+        return mInstance;
+    }
+
+    public void requestMap(Callback<MapDto> callback , String name){
         Retrofit client =  new Retrofit.Builder().baseUrl("https://dapi.kakao.com/").addConverterFactory(GsonConverterFactory.create()).build();
         KakaoApi service = client.create(KakaoApi.class);
         Call<MapDto> call = service.getAdd_name(name);
