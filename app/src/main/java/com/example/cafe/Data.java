@@ -1,43 +1,31 @@
 package com.example.cafe;
 
-public class Data {
+public class Data{
     private String title;
     private String content;
     private String price;
-    private int resId;
+   // private int resId;
+    public Data( String title, String content, String price) {
+        this.title = title;
+        this.content = content;
+        this.price = price;
+     //   this.resId = resId;
+    }
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public int getResId() {
-        return resId;
-    }
-
-    public void setResId(int resId) {
-        this.resId = resId;
-    }
-
-
-
+    /*public int getResId() {
+       return resId;
+    }*/
 }
+

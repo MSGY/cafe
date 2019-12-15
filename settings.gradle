@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':libDaumMapAndroid'
 rootProject.name='cafe'

@@ -1,5 +1,6 @@
 package com.example.cafe;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -31,10 +31,14 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
 
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
         SignInButton Google_login;
         LoginButton Facebook_LoginBtn;
 
@@ -49,11 +53,16 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private String email = "";
     private String password = "";
+    private SessionCallback callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        callback = new SessionCallback();
+        Session.getCurrentSession().addCallback(callback);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -110,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+
     }
     @Override
     protected void onStart(){
@@ -121,6 +131,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStop(){
         super.onStop();
         mAuth.removeAuthStateListener(mAuthListener);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Session.getCurrentSession().removeCallback(callback);
     }
     public void signUp(View view) {
         email = editTextEmail.getText().toString();
@@ -256,4 +271,27 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+    private class SessionCallback implements ISessionCallback {
+
+        @Override
+        public void onSessionOpened() {
+            redirectSignupActivity();  // 세션 연결성공 시 redirectSignupActivity() 호출
+        }
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if(exception != null) {
+                Logger.e(exception);
+            }
+            setContentView(R.layout.activity_login); // 세션 연결이 실패했을때
+        }                                            // 로그인화면을 다시 불러옴
+    }
+    protected void redirectSignupActivity() {       //세션 연결 성공 시 SignupActivity로 넘김
+        Intent kakao2main = new Intent(LoginActivity.this, MainActivity.class);
+        kakao2main.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(kakao2main);
+        finish();
+    }
+
 }

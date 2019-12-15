@@ -1,3 +1,21 @@
 <resources>
+    <string name="facebook_app_id">478230452773202</string>
+    <string name="fb_login_protocol_scheme">fb478230452773202</string>
+    <string name="kakao_app_key">8f4a760a6628e7902feee1080fd6ddd5</string>
     <string name="app_name">cafe</string>
+
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
+
+    <string name="signin">로그인</string>
+    <string name="success_login">로그인 성공</string>
+    <string name="failed_login">로그인 실패</string>
+
+    <string name="signup">회원가입</string>
+    <string name="success_signup">회원가입 성공</string>
+    <string name="failed_signup">회원가입 실패</string>
+    <string name="google_signin">Google 계정으로 로그인</string>
+    <string name="facebook_signin">Facebook 계정으로 로그인</string>
+
+
 </resources>

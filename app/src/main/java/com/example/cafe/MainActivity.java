@@ -1,112 +1,166 @@
 package com.example.cafe;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
-import java.util.List;
+import com.example.cafe.KakaoMap.MapActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     private CafeAdapter adapter;
+    private static ArrayList<Data> menuData;
+    RecyclerView recyclerView;
+    EditText editText;
+    Button signout_btn;
+    Button Main2Map;
 
+    private String TAG = "파이어베이스 테스트";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        menuData = new ArrayList<>();
 
         init();
+        setSearch();
+        Main2Map = findViewById(R.id.button2);
+        Main2Map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent main2map = new Intent(MainActivity.this, MapActivity.class);
+                startActivity(main2map);
+            }
+        });
+        signout_btn = findViewById(R.id.btn_logout);
+        signout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent menu2login = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(menu2login);
+            }
+        });
+      }
 
-        getData();
-
-    }
-    private void init(){
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-
+    private void init() {
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager );
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("menu")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                Data data = new Data(doc.getString("Title"), doc.getString("Content"), doc.getString("Price"));
+                                menuData.add(data);
+                            }
+                        }
+                        adapter = new CafeAdapter(menuData);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+                                int sum = 0;
+                                @Override
+                                public void onItemClick(View view, int pos) {
+                                    final Data PriceValues = menuData.get(pos);
+                                    final ArrayList<Object> selectedItems = new ArrayList<>();
+                                    new AlertDialog.Builder(MainActivity.this)
+                                            .setTitle("추가메뉴")
+                                            .setMultiChoiceItems(R.array.menu, null, new DialogInterface.OnMultiChoiceClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+                                                    if (isChecked) {
+                                                        //항목이 선택이 되면 추가시킵니다.
+                                                        selectedItems.add(i);
+                                                    } else if(selectedItems.contains(i)) {
+                                                        //아이템이 이미 배열에 있으면, 제거합니다.
+                                                        selectedItems.remove(Integer.valueOf(i));
+                                                    }
+                                                }
+                                            })
+                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
 
-        adapter = new CafeAdapter();
-        recyclerView.setAdapter(adapter);
-    }
-    private void getData() {
-        // 임의의 데이터입니다.
-        List<String> listTitle = Arrays.asList("국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립",
-                "국화", "사막", "수국", "해파리", "코알라", "등대", "펭귄", "튤립");
-        List<String> listContent = Arrays.asList(
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다.",
-                "이 꽃은 국화입니다.",
-                "여기는 사막입니다.",
-                "이 꽃은 수국입니다.",
-                "이 동물은 해파리입니다.",
-                "이 동물은 코알라입니다.",
-                "이것은 등대입니다.",
-                "이 동물은 펭귄입니다.",
-                "이 꽃은 튤립입니다."
+                                                    String[] options = getResources().getStringArray(R.array.menu);
+                                                    String string = "선택하신 추가 옵션은 ";
+                                                    if (selectedItems.size() != 0) {
+                                                        for (int i = 0; i < selectedItems.size(); i++) {
+                                                            string += options[i] + " ";
+                                                        }
+                                                        Toast.makeText(MainActivity.this, string + "입니다.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else{
+                                                        Toast.makeText(MainActivity.this, "선택하신 추가메뉴는 없습니다.", Toast.LENGTH_SHORT).show();
+                                                    }
 
-        );
-        List<String> listPrice = Arrays.asList(
-                "1원",
-                "2원",
-                "3원",
-                "4원",
-                "5원",
-                "6원",
-                "7원",
-                "8원",
-                "9원",
-                "10원",
-                "11원",
-                "12원",
-                "13원",
-                "14원",
-                "15원",
-                "16원"
-        );
-        List<Integer> listResId = Arrays.asList(
-                R.drawable.a,
-                R.drawable.b,
-                R.drawable.c,
-                R.drawable.d,
-                R.drawable.e,
-                R.drawable.f,
-                R.drawable.g,
-                R.drawable.h,
-                R.drawable.i,
-                R.drawable.j,
-                R.drawable.k,
-                R.drawable.l,
-                R.drawable.m,
-                R.drawable.n,
-                R.drawable.o,
-                R.drawable.p
-        );
-        for (int i = 0; i < listTitle.size(); i++) {
-            // 각 List의 값들을 data 객체에 set 해줍니다.
-            Data data = new Data();
-            data.setTitle(listTitle.get(i));
-            data.setContent(listContent.get(i));
-            data.setPrice(listPrice.get(i));
-            data.setResId(listResId.get(i));
+                                                    sum += Integer.parseInt(PriceValues.getPrice())-1;
+                                                    String total = Integer.toString(sum);
+                                                    TextView TotalPrice = findViewById(R.id.textView5);
+                                                    TotalPrice.setText("총 주문금액은 : "+ total+"원");
+                                                }
+                                            })
+                                            .setNegativeButton("취소", null)
+                                            .show();
 
-            // 각 값이 들어간 data를 adapter에 추가합니다.
-            adapter.addItem(data);
+                                }
+                            });
+                        }
+                        });
+                    }
+
+    private void filter(String text) {
+        ArrayList<Data> filteredList = new ArrayList<>();
+        for (Data SearchData : menuData) {
+            if (SearchData.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(SearchData);
+            }
         }
+        adapter.filterList(filteredList);
+    }
+    public void setSearch() {
+        editText = (EditText) findViewById(R.id.menu_search);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-        // adapter의 값이 변경되었다는 것을 알려줍니다.
-        adapter.notifyDataSetChanged();
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
     }
 }
