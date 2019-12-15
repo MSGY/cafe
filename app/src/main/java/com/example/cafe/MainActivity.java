@@ -27,14 +27,16 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+import com.example.cafe.cafe.CafeAdapter;
+
 
 public class MainActivity extends AppCompatActivity {
-    private CafeAdapter adapter;
+    private CafeAdapter mAdapter;
     private static ArrayList<Data> menuData;
     RecyclerView recyclerView;
     EditText editText;
-    Button signout_btn;
-    Button Main2Map;
+    Button signoutBtn;
+    Button main2Map;
 
     private String TAG = "파이어베이스 테스트";
 
@@ -46,16 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         setSearch();
-        Main2Map = findViewById(R.id.button2);
-        Main2Map.setOnClickListener(new View.OnClickListener() {
+        main2Map = findViewById(R.id.button2);
+        main2Map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent main2map = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(main2map);
             }
         });
-        signout_btn = findViewById(R.id.btn_logout);
-        signout_btn.setOnClickListener(new View.OnClickListener() {
+        signoutBtn = findViewById(R.id.btn_logout);
+        signoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
@@ -83,10 +85,11 @@ public class MainActivity extends AppCompatActivity {
                                 menuData.add(data);
                             }
                         }
-                        adapter = new CafeAdapter(menuData);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                        adapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+                        mAdapter = new CafeAdapter();
+                        mAdapter.setData(menuData);
+                        recyclerView.setAdapter(mAdapter);
+                        mAdapter.notifyDataSetChanged();
+                        mAdapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
                                 int sum = 0;
                                 @Override
                                 public void onItemClick(View view, int pos) {
@@ -112,9 +115,10 @@ public class MainActivity extends AppCompatActivity {
 
                                                     String[] options = getResources().getStringArray(R.array.menu);
                                                     String string = "선택하신 추가 옵션은 ";
+                                                    StringBuilder stringBuilder = new StringBuilder("선택하신 추가 옵션은 ");
                                                     if (selectedItems.size() != 0) {
                                                         for (int i = 0; i < selectedItems.size(); i++) {
-                                                            string += options[i] + " ";
+                                                            stringBuilder.append(options[i] + " ");
                                                         }
                                                         Toast.makeText(MainActivity.this, string + "입니다.", Toast.LENGTH_SHORT).show();
                                                     }
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 filteredList.add(SearchData);
             }
         }
-        adapter.filterList(filteredList);
+        mAdapter.filterList(filteredList);
     }
     public void setSearch() {
         editText = (EditText) findViewById(R.id.menu_search);

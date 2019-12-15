@@ -74,12 +74,12 @@ public class LoginActivity extends Activity {
         editTextEmail = findViewById(R.id.et_email);
         editTextPassword = findViewById(R.id.et_password);
 
-        Google_login = findViewById(R.id.Google_Login);
+        Google_login = findViewById(R.id.google_Login);
         TextView ggTextView = (TextView) Google_login.getChildAt(0);
         ggTextView.setText(R.string.google_signin);
         callbackManager = CallbackManager.Factory.create();
 
-        Facebook_LoginBtn = (LoginButton)findViewById(R.id.Facebook_Login);
+        Facebook_LoginBtn = (LoginButton)findViewById(R.id.facebook_Login);
         Facebook_LoginBtn.setReadPermissions("email");
         Facebook_LoginBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override

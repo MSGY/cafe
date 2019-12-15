@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp"
     android:background="@android:color/white">
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/pic"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="10dp"
@@ -20,7 +20,7 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -30,7 +30,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -38,7 +38,7 @@
             android:textSize="13sp"
             android:textColor="@android:color/darker_gray"/>
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"

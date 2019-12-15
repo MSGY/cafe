@@ -52,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_weight="1"
-            android:onClick="signUp"
             android:text="@string/signup" />
 
         <Button
@@ -61,24 +60,23 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="50dp"
             android:layout_weight="1"
-            android:onClick="signIn"
             android:text="@string/signin" />
 
 
     </LinearLayout>
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/Google_Login"
+        android:id="@+id/google_Login"
         android:layout_width="match_parent"
         android:layout_height="50sp"
         android:layout_below="@+id/LinearLayout1">
     </com.google.android.gms.common.SignInButton>
 
     <com.facebook.login.widget.LoginButton
-        android:id="@+id/Facebook_Login"
+        android:id="@+id/facebook_Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Google_Login"
+        android:layout_below="@+id/google_Login"
         android:layout_marginLeft="4sp"
         android:layout_marginRight="4sp"
         android:paddingLeft="20dp"
@@ -90,7 +88,7 @@
         android:id="@+id/kakao_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Facebook_Login"
+        android:layout_below="@id/facebook_Login"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp" />

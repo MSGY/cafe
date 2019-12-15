@@ -16,6 +16,7 @@
     <string name="failed_signup">회원가입 실패</string>
     <string name="google_signin">Google 계정으로 로그인</string>
     <string name="facebook_signin">Facebook 계정으로 로그인</string>
+    <string name="price">%s 원</string>
 
 
 </resources>
