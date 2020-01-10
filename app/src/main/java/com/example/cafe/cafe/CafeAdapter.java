@@ -43,18 +43,16 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
         View view;
-        if (viewType == TYPE_HEADER) {
+//        if (viewType == TYPE_HEADER) {
 //            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, false);
 //            holder = new HeaderViewHolder(view);
-        } else {
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_cafe_item, parent, false);
-//            holder = new ItemViewHolder(view)
-//                    .setListener(mCafeListener);
-        }
+//        } else {
 
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_cafe_item, parent, false);
-        holder = new ItemViewHolder(view)
-                .setListener(mCafeListener);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_cafe_item, parent, false);
+            holder = new ItemViewHolder(view)
+                    .setListener(mCafeListener);
+
+//        }
 
         return holder;
     }
@@ -73,7 +71,7 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return menuData.size()+1;}
+        return menuData.size();}
 
     public void filterList(ArrayList<Data> filteredList ){
         menuData = filteredList;

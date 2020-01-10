@@ -26,8 +26,16 @@ public class MapDto implements Serializable {
 
             @SerializedName("address_name") String address_name;
 
-            public String getAddress_name() {return address_name;}
+            public String getAddressName() { return address_name; }
 
+
+            @SerializedName("x") String x;
+
+            public String getX() { return x; }
+
+            @SerializedName("y") String y;
+
+            public String getY() { return y; }
         }
     }
 
