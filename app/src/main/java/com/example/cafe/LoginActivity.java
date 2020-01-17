@@ -79,7 +79,7 @@ public class LoginActivity extends Activity {
         ggTextView.setText(R.string.google_signin);
         callbackManager = CallbackManager.Factory.create();
 
-        Facebook_LoginBtn = (LoginButton)findViewById(R.id.facebook_Login);
+        Facebook_LoginBtn = findViewById(R.id.facebook_Login);
         Facebook_LoginBtn.setReadPermissions("email");
         Facebook_LoginBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -159,28 +159,20 @@ public class LoginActivity extends Activity {
 
     // 이메일 유효성 검사
     private boolean isValidEmail() {
+        // 이메일 형식 불일치
         if (email.isEmpty()) {
             // 이메일 공백
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            // 이메일 형식 불일치
-            return false;
-        } else {
-            return true;
-        }
+        } else return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     // 비밀번호 유효성 검사
     private boolean isValidPassword() {
+        // 비밀번호 형식 불일치
         if (password.isEmpty()) {
             // 비밀번호 공백
             return false;
-        } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            // 비밀번호 형식 불일치
-            return false;
-        } else {
-            return true;
-        }
+        } else return PASSWORD_PATTERN.matcher(password).matches();
     }
 
     // 회원가입

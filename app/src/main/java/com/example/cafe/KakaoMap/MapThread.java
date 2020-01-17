@@ -33,14 +33,14 @@ public class MapThread extends Thread {
         super.run();
         Retrofit client =  new Retrofit.Builder().baseUrl("https://dapi.kakao.com/").addConverterFactory(GsonConverterFactory.create()).build();
         KakaoApi service = client.create(KakaoApi.class);
-        Call<MapDto> call = service.getAdd_name(name);
+        Call<MapDto> call = service.getAddName(name);
         call.enqueue(new Callback<MapDto>() {
             @Override
             public void onResponse(Call<MapDto> call, Response<MapDto> response) {
                 Log.d(TAG, "리스폰스 함" + response);
                 if(response.isSuccessful()){
                     MapDto map= response.body();
-                    Log.d(TAG, "onResponse: "+ map.getDocuments().get(0).getAddress().getAddress_name());
+                    Log.d(TAG, "onResponse: "+ map.getDocuments().get(0).getAddress().getAddressName());
 
                     Message msg = Message.obtain();
                     Bundle bundle = new Bundle();
