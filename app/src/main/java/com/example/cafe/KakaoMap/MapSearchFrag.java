@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.cafe.R;
 
@@ -19,22 +20,22 @@ import javax.annotation.Nullable;
 
 public class MapSearchFrag extends Fragment {
         public static final String TAG = "ASDFASDF";
-        public AddressTransferListener addressTransferListener;
-
+        public AddressTransferListener mAddressTransferListener;
 
         @Override
         public void onAttach(Context context) {
 
             super.onAttach(context);
             if(context instanceof AddressTransferListener){
-                addressTransferListener = (AddressTransferListener) context;
+                mAddressTransferListener = (AddressTransferListener) context;
             }
         }
         @Override
         public void onDetach() {
 
             super.onDetach();
-            addressTransferListener = null;
+            mAddressTransferListener = null;
+
         }
 
         @Nullable
@@ -51,7 +52,14 @@ public class MapSearchFrag extends Fragment {
                    if( actionId == KeyEvent.KEYCODE_ENDCALL){
                        String inputAddress = addressSearch.getText().toString();
                        Log.d(TAG, "onCreateView: "+ inputAddress);
-                       addressTransferListener.addressTransfer(inputAddress);
+                       mAddressTransferListener.addressTransfer(inputAddress);
+
+                       FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                       fragmentManager.beginTransaction().remove(MapSearchFrag.this).commit();
+                       fragmentManager.popBackStack();
+
+                       ((MapActivity)getActivity()).hideKeypad(addressSearch);
+
                        return true;
                    } else{
                        Log.d(TAG, "키값이 다름" + actionId);
@@ -81,4 +89,5 @@ public class MapSearchFrag extends Fragment {
             String addressTransfer(String name);
 
     }
+
 }

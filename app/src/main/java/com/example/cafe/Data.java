@@ -24,6 +24,8 @@ public class Data{
         return price;
     }
 
+
+
     /*public int getResId() {
        return resId;
     }*/

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cafe.KakaoMap.MapActivity;
+import com.example.cafe.cafe.CafeAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,8 +29,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import com.example.cafe.cafe.CafeAdapter;
-
 
 public class MainActivity extends AppCompatActivity {
     private CafeAdapter mAdapter;
@@ -36,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     EditText editText;
     Button signoutBtn;
-    Button main2Map;
+    Button main2MapBtn;
 
     private String TAG = "파이어베이스 테스트";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +47,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         menuData = new ArrayList<>();
 
-        init();
+        final TextView totalPrice = findViewById(R.id.textView5);
+        init(totalPrice);
         setSearch();
-        main2Map = findViewById(R.id.button2);
-        main2Map.setOnClickListener(new View.OnClickListener() {
+
+        main2MapBtn = findViewById(R.id.button2);
+        main2MapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent main2map = new Intent(MainActivity.this, MapActivity.class);
+                main2map.putExtra("total", totalPrice.getText().toString());
                 startActivity(main2map);
             }
         });
+
         signoutBtn = findViewById(R.id.btn_logout);
         signoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
         });
       }
 
-    private void init() {
+    public void init(final TextView tv) {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("menu")
                 .get()
@@ -90,55 +95,55 @@ public class MainActivity extends AppCompatActivity {
                         recyclerView.setAdapter(mAdapter);
                         mAdapter.notifyDataSetChanged();
                         mAdapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
-                                int sum = 0;
+                               int sum = 0;
                                 @Override
                                 public void onItemClick(View view, int pos) {
+
+                                    final String menu[] = {"사이즈 업 ","얼음 추가","샷 추가","휘핑크림 추가"};
+                                    final boolean selectedItems[] = {false, false, false, false};
+                                    //final ArrayList<Object> selectedItems = new ArrayList<>();
                                     final Data PriceValues = menuData.get(pos);
-                                    final ArrayList<Object> selectedItems = new ArrayList<>();
                                     new AlertDialog.Builder(MainActivity.this)
-                                            .setTitle("추가메뉴")
-                                            .setMultiChoiceItems(R.array.menu, null, new DialogInterface.OnMultiChoiceClickListener() {
+                                            .setTitle("추가 옵션")
+                                            .setMultiChoiceItems(menu, selectedItems, new DialogInterface.OnMultiChoiceClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
-                                                    if (isChecked) {
-                                                        //항목이 선택이 되면 추가시킵니다.
-                                                        selectedItems.add(i);
-                                                    } else if(selectedItems.contains(i)) {
-                                                        //아이템이 이미 배열에 있으면, 제거합니다.
-                                                        selectedItems.remove(Integer.valueOf(i));
-                                                    }
+                                                    selectedItems[i]=isChecked;
+
                                                 }
                                             })
                                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
 
-                                                    String[] options = getResources().getStringArray(R.array.menu);
-                                                    String string = "선택하신 추가 옵션은 ";
-                                                    StringBuilder stringBuilder = new StringBuilder("선택하신 추가 옵션은 ");
-                                                    if (selectedItems.size() != 0) {
-                                                        for (int i = 0; i < selectedItems.size(); i++) {
-                                                            stringBuilder.append(options[i] + " ");
-                                                        }
-                                                        Toast.makeText(MainActivity.this, string + "입니다.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    else{
-                                                        Toast.makeText(MainActivity.this, "선택하신 추가메뉴는 없습니다.", Toast.LENGTH_SHORT).show();
-                                                    }
+                                                    //   String[] options = getResources().getStringArray(R.array.menu);
 
-                                                    sum += Integer.parseInt(PriceValues.getPrice())-1;
+                                                    //   StringBuilder optionMenu = new StringBuilder("선택하신 추가 옵션은  ");
+
+                                                        String str = "선택하신 추가 옵션은 : ";
+                                                        for (int i = 0; i < selectedItems.length; i++) {
+                                                            if (selectedItems[i]) {
+                                                                str = str + "「" + menu[i] + "」 ";
+                                                                Toast.makeText(MainActivity.this, str + "입니다", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+//                                                        if(!selectedItems[which]){
+//                                                            Toast.makeText(MainActivity.this, "선택하신 추가 옵션은 없습니다", Toast.LENGTH_SHORT).show();
+//                                                        }
+                                                    sum += Integer.parseInt(PriceValues.getPrice());
                                                     String total = Integer.toString(sum);
-                                                    TextView TotalPrice = findViewById(R.id.textView5);
-                                                    TotalPrice.setText("총 주문금액은 : "+ total+"원");
+                                                    tv.setText("총 주문금액 : "+ total+"원");
+
+                                                    Log.d(TAG, "합산가격2 "+ total);
                                                 }
                                             })
                                             .setNegativeButton("취소", null)
                                             .show();
-
                                 }
                             });
                         }
                         });
+
                     }
 
     private void filter(String text) {
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.filterList(filteredList);
     }
     public void setSearch() {
-        editText = (EditText) findViewById(R.id.menu_search);
+        editText = findViewById(R.id.menu_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -167,4 +172,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }
