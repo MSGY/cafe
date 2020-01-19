@@ -53,10 +53,7 @@ public class MapSearchFrag extends Fragment {
                        String inputAddress = addressSearch.getText().toString();
                        Log.d(TAG, "onCreateView: "+ inputAddress);
                        mAddressTransferListener.addressTransfer(inputAddress);
-
-                       FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                       fragmentManager.beginTransaction().remove(MapSearchFrag.this).commit();
-                       fragmentManager.popBackStack();
+                       FragmentRemove();
 
                        ((MapActivity)getActivity()).hideKeypad(addressSearch);
 
@@ -69,12 +66,12 @@ public class MapSearchFrag extends Fragment {
                 }
             });
 
-
-
             ImageView backpress_Btn = rootView.findViewById(R.id.backpress_Btn);
             backpress_Btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    FragmentRemove();
+                    ((MapActivity)getActivity()).hideKeypad(addressSearch);
                     Log.d(TAG,"ASDFASDF");
                 }
             });
@@ -89,5 +86,9 @@ public class MapSearchFrag extends Fragment {
             String addressTransfer(String name);
 
     }
-
+    public void FragmentRemove(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(MapSearchFrag.this).commit();
+        fragmentManager.popBackStack();
+    }
 }

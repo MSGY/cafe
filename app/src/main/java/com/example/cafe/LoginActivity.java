@@ -114,8 +114,6 @@ public class LoginActivity extends Activity {
                     Intent login2Main = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(login2Main);
                     finish();
-                }else {
-
                 }
             }
         };

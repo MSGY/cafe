@@ -59,7 +59,7 @@ public class MapActivity extends AppCompatActivity implements MapSearchFrag.Addr
         public View getCalloutBalloon(MapPOIItem poiItem) {
             ((ImageView) mCalloutBalloon.findViewById(R.id.badge)).setImageResource(R.drawable.ic_launcher);
             ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
-            ((TextView) mCalloutBalloon.findViewById(R.id.desc)).setText("Custom CalloutBalloon");
+            ((TextView) mCalloutBalloon.findViewById(R.id.desc)).setText("검색하신 주소입니다.");
             return mCalloutBalloon;
         }
 
@@ -100,15 +100,20 @@ public class MapActivity extends AppCompatActivity implements MapSearchFrag.Addr
                 Log.d(TAG,"프래그먼트 생성됨");
             }
         });
-        map2ResultBtn = findViewById(R.id.button3);
+        map2ResultBtn = findViewById(R.id.address_confirm);
         map2ResultBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent map2Result = new Intent(MapActivity.this, ResultActivity.class);
-                map2Result.putExtra("totalPrice", price);
-                map2Result.putExtra("searchedAddress", addressTransfer(addressName));
-                Log.d(TAG, "onCreate: " + addressTransfer(addressName));
-                startActivity(map2Result);
+               if(addressName == null){
+                    Toast.makeText(mapContext, "주소를 지정하셔야합니다", Toast.LENGTH_SHORT).show();
+                }else{
+                   map2Result.putExtra("totalPrice", price);
+                   map2Result.putExtra("searchedAddress", addressTransfer(addressName));
+                   Log.d(TAG, "onCreate: " + addressTransfer(addressName));
+                   startActivity(map2Result);
+               }
+
             }
         });
     }
@@ -164,8 +169,6 @@ public class MapActivity extends AppCompatActivity implements MapSearchFrag.Addr
 
     }
     public void Click(View v){
-        Intent map2Result = new Intent(MapActivity.this, ResultActivity.class);
-        startActivity(map2Result);
 
     }
     @Override

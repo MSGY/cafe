@@ -4,12 +4,12 @@ public class Data{
     private String title;
     private String content;
     private String price;
-   // private int resId;
-    public Data( String title, String content, String price) {
+    private String url;
+    public Data( String title, String content, String price, String url) {
         this.title = title;
         this.content = content;
         this.price = price;
-     //   this.resId = resId;
+        this.url  = url;
     }
 
     public String getTitle() {
@@ -24,10 +24,6 @@ public class Data{
         return price;
     }
 
-
-
-    /*public int getResId() {
-       return resId;
-    }*/
+    public String getUrl() { return url; }
 }
 

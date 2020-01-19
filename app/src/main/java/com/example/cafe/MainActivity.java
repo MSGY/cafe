@@ -26,13 +26,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
     private CafeAdapter mAdapter;
     private static ArrayList<Data> menuData;
+    public String total;
     RecyclerView recyclerView;
     EditText editText;
     Button signoutBtn;
@@ -46,18 +50,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         menuData = new ArrayList<>();
-
-        final TextView totalPrice = findViewById(R.id.textView5);
-        init(totalPrice);
+        init();
         setSearch();
-
-        main2MapBtn = findViewById(R.id.button2);
+        main2MapBtn = findViewById(R.id.menu_confirm);
         main2MapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent main2map = new Intent(MainActivity.this, MapActivity.class);
-                main2map.putExtra("total", totalPrice.getText().toString());
-                startActivity(main2map);
+                if(total == null){
+                    Toast.makeText(MainActivity.this, "메뉴를 선택하셔야합니다", Toast.LENGTH_SHORT).show();
+                }else{
+                    main2map.putExtra("total", total);
+                    startActivity(main2map);
+
+                }
             }
         });
 
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         });
       }
 
-    public void init(final TextView tv) {
+    public void init() {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -86,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
-                                Data data = new Data(doc.getString("Title"), doc.getString("Content"), doc.getString("Price"));
+                                Data data = new Data(doc.getString("Title"), doc.getString("Content"), doc.getString("Price"), doc.getString("Url"));
                                 menuData.add(data);
                             }
                         }
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         recyclerView.setAdapter(mAdapter);
                         mAdapter.notifyDataSetChanged();
                         mAdapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
-                               int sum = 0;
+                            int sum = 0;
                                 @Override
                                 public void onItemClick(View view, int pos) {
 
@@ -125,14 +131,16 @@ public class MainActivity extends AppCompatActivity {
                                                             if (selectedItems[i]) {
                                                                 str = str + "「" + menu[i] + "」 ";
                                                                 Toast.makeText(MainActivity.this, str + "입니다", Toast.LENGTH_SHORT).show();
+                                                            }else if(!selectedItems[i]){
+                                                                Toast.makeText(MainActivity.this, "선택하신 추가 옵션은 없습니다", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
-//                                                        if(!selectedItems[which]){
-//                                                            Toast.makeText(MainActivity.this, "선택하신 추가 옵션은 없습니다", Toast.LENGTH_SHORT).show();
-//                                                        }
                                                     sum += Integer.parseInt(PriceValues.getPrice());
-                                                    String total = Integer.toString(sum);
-                                                    tv.setText("총 주문금액 : "+ total+"원");
+                                                    DecimalFormat mFormatter = new DecimalFormat("###,###");
+                                                    String formattedStringPrice = mFormatter.format(sum);
+                                                    total = Integer.toString(sum);
+                                                        TextView total_price = findViewById(R.id.textView5);
+                                                        total_price.setText("총 주문금액 : "+ formattedStringPrice+"원");
 
                                                     Log.d(TAG, "합산가격2 "+ total);
                                                 }
