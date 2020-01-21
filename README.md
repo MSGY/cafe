@@ -2,14 +2,15 @@ Coffee Delivery Service
 ==========================
 
 
-##Introduction 
+##
+Introduction 
 =============
 주문받은 메뉴를 지정한 주소로 배달하겠다는 알림을 보내는 APP입니다.
 
 주요 외부사이트 계정의 로그인 연동 기능과 앱 내에서의 회원가입,로그인을 할 수 있는 Login Activity에서 로그인 후, 메인 액티비티에서 사용자가 원하는 메뉴들을 검색하거나 스크롤하여 찾은 뒤, 클릭하여 주문을 합니다. 그리고 맵 액티비티로 넘어가 배달받을 주소를 입력하고 Result Activity로 넘어갑니다. 사용자는 Result Activity에서 주문한 메뉴의 가격과 검색한 주소를 확인하고 결제 버튼을 누르면 알람을 받습니다.
 
 
-##Detail Introduction
+## Detail Introduction
 ===================
 ###Login Activity
 ![](./images/login.jpg)
