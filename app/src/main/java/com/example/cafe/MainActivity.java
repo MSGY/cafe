@@ -2,6 +2,7 @@ package com.example.cafe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cafe.KakaoMap.MapActivity;
 import com.example.cafe.cafe.CafeAdapter;
+import com.example.cafe.constant.Url;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,17 +33,16 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
     private CafeAdapter mAdapter;
-    private static ArrayList<Data> menuData;
     public String total;
     RecyclerView recyclerView;
     EditText editText;
     Button signoutBtn;
     Button main2MapBtn;
-
     private String TAG = "파이어베이스 테스트";
 
 
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        menuData = new ArrayList<>();
         init();
         setSearch();
         main2MapBtn = findViewById(R.id.menu_confirm);
@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new CafeAdapter();
+        recyclerView.setAdapter(mAdapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("menu")
@@ -92,71 +94,78 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
-                                Data data = new Data(doc.getString("Title"), doc.getString("Content"), doc.getString("Price"), doc.getString("Url"));
-                                menuData.add(data);
-                            }
-                        }
-                        mAdapter = new CafeAdapter();
-                        mAdapter.setData(menuData);
-                        recyclerView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-                        mAdapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
-                            int sum = 0;
-                                @Override
-                                public void onItemClick(View view, int pos) {
-
-                                    final String menu[] = {"사이즈 업 ","얼음 추가","샷 추가","휘핑크림 추가"};
-                                    final boolean selectedItems[] = {false, false, false, false};
-                                    //final ArrayList<Object> selectedItems = new ArrayList<>();
-                                    final Data PriceValues = menuData.get(pos);
-                                    new AlertDialog.Builder(MainActivity.this)
-                                            .setTitle("추가 옵션")
-                                            .setMultiChoiceItems(menu, selectedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
-                                                    selectedItems[i]=isChecked;
-
-                                                }
-                                            })
-                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                    //   String[] options = getResources().getStringArray(R.array.menu);
-
-                                                    //   StringBuilder optionMenu = new StringBuilder("선택하신 추가 옵션은  ");
-
-                                                        String str = "선택하신 추가 옵션은 : ";
-                                                        for (int i = 0; i < selectedItems.length; i++) {
-                                                            if (selectedItems[i]) {
-                                                                str = str + "「" + menu[i] + "」 ";
-                                                                Toast.makeText(MainActivity.this, str + "입니다", Toast.LENGTH_SHORT).show();
-                                                            }else if(!selectedItems[i]){
-                                                                Toast.makeText(MainActivity.this, "선택하신 추가 옵션은 없습니다", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    sum += Integer.parseInt(PriceValues.getPrice());
-                                                    DecimalFormat mFormatter = new DecimalFormat("###,###");
-                                                    String formattedStringPrice = mFormatter.format(sum);
-                                                    total = Integer.toString(sum);
-                                                        TextView total_price = findViewById(R.id.textView5);
-                                                        total_price.setText("총 주문금액 : "+ formattedStringPrice+"원");
-
-                                                    Log.d(TAG, "합산가격2 "+ total);
-                                                }
-                                            })
-                                            .setNegativeButton("취소", null)
-                                            .show();
+                                try{
+                                    Data data = new Data(doc.getString("Title"), doc.getString("Content"), doc.getString("Price"), getImageUrl(doc.getString("name")));
+                                    mAdapter.getList().add(data);
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
-                            });
+                            }
+                            mAdapter.notifyDataSetChanged();
                         }
-                        });
+                    }
+                });
+
+        mAdapter.setOnItemClickListener(new CafeAdapter.OnItemClickListener() {
+            int sum = 0;
+            @Override
+            public void onItemClick(View view, int pos) {
+
+                final String menu[] = {"사이즈 업 ","얼음 추가","샷 추가","휘핑크림 추가"};
+                final boolean selectedItems[] = {false, false, false, false};
+                //final ArrayList<Object> selectedItems = new ArrayList<>();
+                final Data PriceValues = mAdapter.getList().get(pos);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("추가 옵션")
+                        .setMultiChoiceItems(menu, selectedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+                                selectedItems[i]=isChecked;
+
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                StringBuilder sbMenu = new StringBuilder();
+                                int selectCount = 0;
+                                for(int i = 0 ; i< selectedItems.length; i++){
+                                    if(selectedItems[i]){
+                                        if(i == 0){
+                                            sbMenu.append(getString(R.string.menu_choice, menu[i]));
+                                        }else{
+                                            sbMenu.append(" ").append(getString(R.string.menu_choice, menu[i]));
+                                        }
+                                        selectCount++;
+                                    }
+                                }
+
+                                if(selectCount == 0){
+                                    Toast.makeText(MainActivity.this, "선택하신 추가 옵션은 없습니다", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(MainActivity.this, getString(R.string.menu_empty_string, sbMenu.toString()), Toast.LENGTH_SHORT).show();
+                                }
+
+                                sum += Integer.parseInt(PriceValues.getPrice());
+                                DecimalFormat mFormatter = new DecimalFormat("###,###");
+                                String formattedStringPrice = mFormatter.format(sum);
+                                total = Integer.toString(sum);
+                                TextView total_price = findViewById(R.id.textView5);
+                                total_price.setText("총 주문금액 : "+ formattedStringPrice+"원");
+
+                                Log.d(TAG, "합산가격2 "+ total);
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
+            }
+        });
 
                     }
 
     private void filter(String text) {
         ArrayList<Data> filteredList = new ArrayList<>();
-        for (Data SearchData : menuData) {
+        for (Data SearchData : mAdapter.getList()) {
             if (SearchData.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(SearchData);
             }
@@ -179,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
                 filter(editable.toString());
             }
         });
+    }
+
+    private String getImageUrl(String name){
+        return Url.IMAGE_URL_PREFIX + name + Url.IMAGE_URL_AFTERFIX;
     }
 
 }

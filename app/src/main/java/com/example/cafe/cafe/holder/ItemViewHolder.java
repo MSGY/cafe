@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.cafe.Data;
@@ -62,20 +63,14 @@ public class ItemViewHolder extends GyHolder{
 
     @Override
     public void onBind(RecyclerView.ViewHolder holder, Data menuData) {
-        StorageReference storage = FirebaseStorage.getInstance().getReferenceFromUrl(menuData.getUrl());
-        storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-            if(task.isSuccessful()){
-                Glide.with(mContext)
-                        .load(task.getResult())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(mDrinkImage);
-            }
+        Glide.with(mContext).clear(mDrinkImage);
 
-            }
-        });
-        //StorageReference getReference = storage.getReferenceFromUrl("gs://my-cafe-e8f07.appspot.com/DrinkImage/*");
+        Glide.with(mContext)
+                .load(menuData.getUrl())
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(mDrinkImage);
+
 
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         itemViewHolder.mTitle.setText(menuData.getTitle());

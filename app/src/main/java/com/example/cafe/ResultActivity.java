@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.example.cafe.KakaoMap.MapActivity;
+import com.example.cafe.util.KeyboardUtil;
 
 import java.text.DecimalFormat;
 
@@ -39,7 +40,7 @@ public class ResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
+        
 
         Intent intent = getIntent();
         String totalPrice= intent.getStringExtra("totalPrice");
@@ -57,11 +58,12 @@ public class ResultActivity extends AppCompatActivity {
         detail_address = findViewById(R.id.detail_address);
         detail_address.setImeOptions(EditorInfo.IME_ACTION_DONE);
         detail_address.setInputType(InputType.TYPE_CLASS_TEXT);
+
         detail_address.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if( actionId == EditorInfo.IME_ACTION_DONE ){
-                    ((MapActivity)MapActivity.mapContext).hideKeypad(detail_address);
+                    KeyboardUtil.hideKeypad(ResultActivity.this, detail_address);
                     if(detailAddress !=  null){
                         detailAddress = detail_address.getText().toString();
 

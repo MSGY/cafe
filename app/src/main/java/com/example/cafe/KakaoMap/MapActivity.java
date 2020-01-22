@@ -144,10 +144,7 @@ public class MapActivity extends AppCompatActivity implements MapSearchFrag.Addr
         }
     };
 
-    public void hideKeypad(EditText editText){
-        InputMethodManager mInputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        mInputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-    }
+
     public void createMarker(String address, double x, double y, MapView mapView){
         Log.d(TAG, "createMarker: " + address + x + y);
         mMarker = new MapPOIItem();

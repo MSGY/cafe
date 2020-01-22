@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int TYPE_HEADER = 0;
     private final int TYPE_ITEM = 1;
-    private ArrayList<Data> menuData;
+    private ArrayList<Data> menuList;
     private String TAG = "포지션 테스트";
 
     public interface OnItemClickListener {void onItemClick(View view, int position);}
@@ -28,10 +28,15 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
     public CafeAdapter(){
+        menuList = new ArrayList<>();
     }
 
     public void setData(ArrayList<Data> MenuData){
-        this.menuData = MenuData;
+        this.menuList = MenuData;
+    }
+
+    public ArrayList<Data> getList() {
+        return menuList;
     }
 
     public long getItemId(int position){
@@ -65,16 +70,16 @@ public class CafeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof GyHolder) {
-            ((GyHolder)holder).onBind(holder, menuData.get(position));
+            ((GyHolder)holder).onBind(holder, menuList.get(position));
         }
     }
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return menuData.size();}
+        return menuList.size();}
 
     public void filterList(ArrayList<Data> filteredList ){
-        menuData = filteredList;
+        menuList = filteredList;
         notifyDataSetChanged();
     }
 }

@@ -18,4 +18,6 @@
     <string name="facebook_signin">Facebook 계정으로 로그인</string>
     <string name="price">%s 원</string>
 
+    <string name="menu_empty_string">선택하신 추가 옵션은 : %s 입니다.</string>
+    <string name="menu_choice">「%s」</string>
 </resources>

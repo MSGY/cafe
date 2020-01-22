@@ -25,5 +25,21 @@ public class Data{
     }
 
     public String getUrl() { return url; }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
 
